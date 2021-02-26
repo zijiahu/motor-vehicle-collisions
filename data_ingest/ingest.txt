@@ -1,0 +1,45 @@
+Datasets are directly downloaded from the City of NY website to a local machine before being uploaded to Dumbo.
+Data sources:
+
+Permit Data (Street Construction Permits):
+https://data.cityofnewyork.us/Transportation/Street-Construction-Permits/tqtj-sjs8
+
+Volume Data (Traffic Volume Counts (2014-2019)):
+https://data.cityofnewyork.us/Transportation/Traffic-Volume-Counts-2014-2019-/ertz-hr4r
+
+Collision Data (Motor Vehicle Collisions - Crashes):
+https://data.cityofnewyork.us/Public-Safety/Motor-Vehicle-Collisions-Crashes/h9gi-nx95
+
+
+Datasets were then uploaded to HDFS.
+Example command:
+
+//1. Download dataset from online as a csv file
+https://data.cityofnewyork.us/Transportation/Street-Construction-Permits/tqtj-sjs8
+
+//2. Log in to dumbo
+ssh -Y zh1130@dumbo.es.its.nyu.edu
+
+//3. Make a directory on Dumbo
+mkdir /home/zh1130/PBDAAProject
+
+//4. Open a new terminal window and transfer dataset csv file from laptop to dumbo
+scp ./Street_Construction_Permits.csv zh1130@dumbo.es.its.nyu.edu:/home/zh1130/PBDAAProject/Street_Construction_Permits.csv
+
+//5. On the terminal window that have already loged in to dumbo, make a directory on HDFS
+hdfs dfs -mkdir /user/zh1130/PBDAAProject
+
+//6. Put the dataset into HDFS
+hdfs dfs -put /home/zh1130/PBDAAProject/Street_Construction_Permits.csv /user/zh1130/PBDAAProject/
+
+//7. Share dataset with team members
+hdfs dfs -setfacl -R -m default:user:mrz262:rwx /user/zh1130/PBDAAProject
+hdfs dfs -setfacl -R -m user:mrz262:rwx /user/zh1130/PBDAAProject
+
+hdfs dfs -setfacl -R -m default:user:ky1044:rwx /user/zh1130/PBDAAProject
+hdfs dfs -setfacl -R -m user:ky1044:rwx /user/zh1130/PBDAAProject
+
+
+//8. Check permissions
+hdfs dfs -getfacl /user/zh1130/PBDAAProject
+hdfs dfs -getfacl /user/zh1130/PBDAAProject/Street_Construction_Permits.csv

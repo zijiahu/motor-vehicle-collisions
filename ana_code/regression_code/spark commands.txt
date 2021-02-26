@@ -1,0 +1,61 @@
+spark2-shell
+
+import org.apache.spark.ml.feature.VectorAssembler
+import org.apache.spark.ml.regression.LinearRegression
+import org.apache.spark.ml.evaluation.RegressionEvaluator
+import org.apache.spark.sql.functions.udf
+
+
+// merged dataset of permits and collisions. Predict collisions using permits
+var df1 = spark.read.option("header","true").option("inferSchema","true").csv("project/merge/mergePermits.csv")
+df1 = df1.drop("p.street","c.injuries","c.deaths")
+df1 = df1.withColumnRenamed("p.permits","permits")
+df1 = df1.withColumnRenamed("c.collisions","label")
+var assembler1 = new VectorAssembler().setInputCols(Array("permits")).setOutputCol("features")
+df1 = assembler1.transform(df1)
+var lr1 = new LinearRegression().setMaxIter(10).setRegParam(0.3).setElasticNetParam(0.8)
+var lr1Model = lr1.fit(df1)
+var Summary1 = lr1Model.summary
+println(s"R squared = ${Summary1.r2}")
+print(s"weights = ${lr1Model.coefficients}")
+
+
+// merged dataset of permits and collisions. Predict collisions using volume
+var df2 = spark.read.option("header","true").option("inferSchema","true").csv("project/merge/mergeVolume.csv")
+df2 = df2.drop("v.street","c.injuries","c.deaths")
+df2 = df2.withColumnRenamed("v.volume","volume")
+df2 = df2.withColumnRenamed("c.collisions","label")
+var assembler2 = new VectorAssembler().setInputCols(Array("volume")).setOutputCol("features")
+df2 = assembler2.transform(df2)
+var lr2 = new LinearRegression().setMaxIter(10).setRegParam(0.3).setElasticNetParam(0.8)
+var lr2Model = lr2.fit(df2)
+var Summary2 = lr2Model.summary
+println(s"R squared = ${Summary2.r2}")
+print(s"weights = ${lr2Model.coefficients}")
+
+
+//same as df2, but get log of collision rate using log (collision / volume) and make that target variable
+var df3 = spark.read.option("header","true").option("inferSchema","true").csv("project/merge/mergeVolume.csv")
+df3 = df3.drop("v.street","c.injuries","c.deaths")
+df3 = df3.withColumnRenamed("v.volume","volume")
+df3 = df3.withColumnRenamed("c.collisions","collisions")
+//code to make a new column for collision rates
+def coder = udf((collisions: Double, volume: Double) => collisions/volume)
+df3 = df3.withColumn("collision rate", coder($"collisions",$"volume"))
+//get the log of the collision rate
+df3 = df3.withColumn("log collision rate", log(col("collision rate")))
+df3 = df3.drop("collisions").drop("collision rate")
+df3 = df3.withColumnRenamed("log collision rate","label")
+var assembler3 = new VectorAssembler().setInputCols(Array("volume")).setOutputCol("features")
+df3 = assembler3.transform(df3)
+var lr3 = new LinearRegression().setMaxIter(10).setRegParam(0.3).setElasticNetParam(0.8)
+var lr3Model = lr3.fit(df3)
+var Summary3 = lr3Model.summary
+println(s"R squared = ${Summary3.r2}")
+print(s"weights = ${lr3Model.coefficients}")
+
+
+
+
+
+

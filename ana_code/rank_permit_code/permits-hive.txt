@@ -1,0 +1,29 @@
+beeline --outputformat=csv2
+
+!connect jdbc:hive2://babar.es.its.nyu.edu:10000/
+
+use zh1130;
+
+Create external table aggregatecollisions(street string, x string,collisions int, injuries int, deaths int) row format delimited fields terminated by ',' location '/user/zh1130/PBDAAProject/aggregate/collisions';
+
+
+Create external table aggregatepermits(street string, x string,permits int) row format delimited fields terminated by ',' location '/user/zh1130/PBDAAProject/aggregate/permits';
+
+
+Create external table aggregatevolume(street string, x string,volume int) row format delimited fields terminated by ',' location '/user/zh1130/PBDAAProject/aggregate/volume';
+
+
+SELECT * from aggregatepermits ORDER BY permits DESC LIMIT 10;
+
+/* We get the street name with top 10 number of permits issued:
+	west 57 street/6 avenue,	,344
+	west 45 street/6 avenue,	,310
+	west 42 street/8 avenue,	,270
+	west 44 street/6 avenue,	,252
+	west 57 street/7 avenue,	,245
+	west 41 street/8 avenue,	,233
+	west 43 street/6 avenue,	,224
+	west 34 street/7 avenue,	,224
+	west 56 street/6 avenue,	,222
+	west 47 street/6 avenue,	,213
+*/

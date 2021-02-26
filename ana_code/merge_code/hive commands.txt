@@ -1,0 +1,16 @@
+beeline --outputformat=csv2
+!connect jdbc:hive2://babar.es.its.nyu.edu:10000/
+use *username*;
+
+Create external table aggregatecollisions(street string, x string,collisions int, injuries int, deaths int) row format delimited fields terminated by ',' location '/user/ky1044/project/aggregate/collisions';
+
+Create external table aggregatepermits(street string, x string,permits int) row format delimited fields terminated by ',' location '/user/ky1044/project/aggregate/permits';
+
+Create external table aggregatevolume(street string, x string,volume int) row format delimited fields terminated by ',' location '/user/ky1044/project/aggregate/volume';
+
+select v.street, v.volume, c.collisions, c.injuries, c.deaths from aggregatevolume v join aggregatecollisions c on (v.street=c.street);
+
+select p.street, p.permits, c.collisions, c.injuries, c.deaths from aggregatepermits p join aggregatecollisions c on (p.street=c.street);
+
+
+
