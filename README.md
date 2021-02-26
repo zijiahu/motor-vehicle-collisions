@@ -17,34 +17,35 @@ Collision Data (Ken):
 ## Data Ingestion
 
 Data was directly downloaded from City of NY website to a local machine before being uploaded to Dumbo. 
-<!-- Further details are in `/data_ingest/ingest.txt`.  -->
 To upload datasets HDFS, here are some example commands:
 
-1. Download dataset from online as a csv file
-https://data.cityofnewyork.us/Transportation/Street-Construction-Permits/tqtj-sjs8
+1. **Download dataset from online as a csv file** [*Street Construction Permits*](https://data.cityofnewyork.us/Transportation/Street-Construction-Permits/tqtj-sjs8)
 
-2. Log in to dumbo
-`ssh -Y zh1130@dumbo.es.its.nyu.edu` (you can replace "zh1130" by your netID)
+2. **Log in to dumbo**&nbsp;
+`ssh -Y zh1130@dumbo.es.its.nyu.edu` (you can replace "zh1130" with your netID)
 
-3. Make a directory on Dumbo
+3. **Make a directory on Dumbo**&nbsp;
 `mkdir /home/zh1130/PBDAAProject`
 
-4. Open a new terminal window and transfer dataset csv file from laptop to dumbo
+4. **Transfer dataset csv file from laptop to dumbo**&nbsp;
+Open a new terminal window and transfer dataset csv file from laptop to dumbo by using the following command:  
 `scp ./Street_Construction_Permits.csv zh1130@dumbo.es.its.nyu.edu:/home/zh1130/PBDAAProject/Street_Construction_Permits.csv`
 
-5. On the terminal window that have already loged in to dumbo, make a directory on HDFS
+5. **Make a directory on HDFS**&nbsp;
+On the terminal window that have already loged in to dumbo, make a directory on HDFS:  
 `hdfs dfs -mkdir /user/zh1130/PBDAAProject`
 
-6. Put the dataset into HDFS
+6. **Put the dataset into HDFS**&nbsp;
 `hdfs dfs -put /home/zh1130/PBDAAProject/Street_Construction_Permits.csv /user/zh1130/PBDAAProject/`
 
-7. Share dataset with other people (replace "netid" by the netID of the person you want to share with)
-`hdfs dfs -setfacl -R -m default:user:netid:rwx /user/zh1130/PBDAAProject`
+7. **Share dataset with other people**&nbsp;
+(replace "netid" by the netID of the person you want to share with)&nbsp;
+`hdfs dfs -setfacl -R -m default:user:netid:rwx /user/zh1130/PBDAAProject`&nbsp;
 `hdfs dfs -setfacl -R -m user:netid:rwx /user/zh1130/PBDAAProject`
 
 
-8. Check permissions
-`hdfs dfs -getfacl /user/zh1130/PBDAAProject`
+8. **Check permissions**&nbsp;
+`hdfs dfs -getfacl /user/zh1130/PBDAAProject`&nbsp;
 `hdfs dfs -getfacl /user/zh1130/PBDAAProject/Street_Construction_Permits.csv`
 
 
