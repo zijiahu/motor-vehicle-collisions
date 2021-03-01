@@ -1,5 +1,5 @@
 # Motor Vehicle Collisions Project  
-#### Ken Yokokawa, Matthew Zhang, Zijia Hu
+#### Zijia Hu, Ken Yokokawa, Matthew Zhang
 
 
 ## Data Sources
